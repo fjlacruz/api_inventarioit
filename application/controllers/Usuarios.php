@@ -92,8 +92,11 @@ class Usuarios extends CI_Controller
     {
 
         extract($_POST);
-        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus);
-        if ($up) {
+    
+        $confirmarClave = md5($this->input->post('confirmarClave'));
+
+        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus,$confirmarClave);
+        if ($up==1) {
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));

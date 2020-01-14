@@ -43,8 +43,6 @@ class Consultas_usuarios_model extends CI_Model
   }
 
 
-
-
   public function loguear($rut, $clave)
   {
     $query = $this->db->query("SELECT id_usuario,nombres,apellidos,rut,clave,rol,email,
@@ -78,7 +76,6 @@ class Consultas_usuarios_model extends CI_Model
     }
   }
 
-
   public function usuariosToken($token)
   {
     $query = $this->db->query("SELECT * FROM t_usuarios WHERE  token='{$token}'");
@@ -91,17 +88,21 @@ class Consultas_usuarios_model extends CI_Model
     return $query->result();
   }
 
-  public function modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus)
+  public function modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus,$confirmarClave=NULL)
   {
     // extract($$arrayData2);
-    $sql = "UPDATE t_usuarios set nombres = '{$nombres}',
-                                  apellidos = '{$apellidos}',
-                                  rut = '{$rut}',
-                                  usuario = '{$usuario}',
-                                  telefono = '{$telefono}',
-                                  rol = '{$rol}' ,
-                                  estatus = '{$estatus}'
-                                  where id_usuario={$id_usuario}";
+    $sql = "UPDATE t_usuarios set nombres = '{$nombres}',";
+    $sql.= " apellidos = '{$apellidos}',";
+    $sql.= " rut = '{$rut}',";
+    $sql.= " usuario = '{$usuario}',";
+    $sql.= " telefono = '{$telefono}',";
+    $sql.= " rol = '{$rol}' ,";
+    $sql.=" estatus = '{$estatus}',";
+    if($confirmarClave != NULL){
+      $sql.=" clave = '{$confirmarClave}'";
+    }
+    $sql.= " where id_usuario={$id_usuario}";
+
     $query = $this->db->query($sql);
     if ($this->db->affected_rows() > 0) {
       return 1;
@@ -110,13 +111,12 @@ class Consultas_usuarios_model extends CI_Model
     }
   }
 
-
   public function usuarios_guardar($arrayData)
   {
     extract($arrayData);
 
-    $sql = "INSERT INTO t_usuarios  (nombres,      apellidos, rut,     email,     usuario,    clave,     telefono,  rol) 
-                          VALUES  ('{$nombres}', '{$apellidos}','{$rut}','{$email}','{$usuario}','{$clave}','{$telefono}',{$rol})";
+    $sql = "INSERT INTO t_usuarios (nombres, apellidos, rut,email,usuario,clave,telefono,rol) 
+                          VALUES  ('{$nombres}','{$apellidos}','{$rut}','{$email}','{$usuario}','{$clave}','{$telefono}',{$rol})";
     $this->db->query($sql);
     //return 1;
     if ($this->db->affected_rows() > 0) {
@@ -193,76 +193,4 @@ class Consultas_usuarios_model extends CI_Model
     }
   }
 
-
-
-  // ============== Funcion para modificar usuarios ==========================// 
-  public function actualizar_usuario($rol, $estatus, $id)
-  {
-    // extract($$arrayData2);
-    $sql = "UPDATE  t_usuarios set rol = '{$rol}',
-                                      estatus = '{$estatus}'                           
-                                      where id_usuario={$id}";
-    $query = $this->db->query($sql);
-    // return $query->result();          
-  }
-
-
-
-
-  // ============== Funcion para modificar datos de  usuarios ==========================// 
-  public function modificar_usuario_cedula($id_usuario, $correo, $usuario, $nombres, $apellidos, $telefono)
-  {
-    // extract($$arrayData2);
-    $sql = "UPDATE  t_usuarios set correo = '{$correo}',
-                                   usuario = '{$usuario}',
-                                   nombres = '{$nombres}',
-                                   apellidos ='{$apellidos}',
-                                   telefono ='{$telefono}'                          
-                                  where id_usuario=$id_usuario";
-    $query = $this->db->query($sql);
-
-    // return $query->result();          
-  }
-  // ============== Funcion para actualizar contrase�a ==========================// 
-  public function actualizar_contrasenia2($id_usuario, $clave)
-  {
-    // extract($$arrayData2);
-    $sql = "UPDATE  t_usuarios set clave = '{$clave}'                          
-                                  where id_usuario='{$id_usuario}'";
-    $query = $this->db->query($sql);
-    // return $query->result();          
-  }
-  // ============== Funcion para actualizar contrase�a aletoria envia al correo ==========================// 
-  public function actualizar_contrasenia($correo, $clave)
-  {
-    // extract($arrayData2);
-    $sql = "UPDATE  t_usuarios set clave = '{$clave}'                          
-                                  where correo='{$correo}'";
-    $query = $this->db->query($sql);
-    // return $query->result();          
-  }
-
-  public function fecha_registro()
-  {
-    // return $this->db->get('t_usuarios')->row()->fecha_registro;
-    //  $this->db->order_by('fecha_registro', 'DESC');
-
-
-
-    $query = $this->db->query("SELECT fecha_registro from t_usuarios order by fecha_registro desc limit 1");
-    return $query->result();
-  }
-  // ============== Funcion para cargar la tabla de usuarios ==========================//
-  public function get_roles()
-  {
-    $query = $this->db->query("select * from n_roles");
-    return $query->result();
-  }
-
-  public function contar_usuarios()
-  {
-    $query = $this->db->query("SELECT count(id_usuario) as cantidad
-                                   from t_usuarios  where estatus=1");
-    return $query->result();
-  }
 }
