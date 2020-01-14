@@ -93,7 +93,7 @@ class Usuarios extends CI_Controller
 
         extract($_POST);
     
-        $confirmarClave = md5($this->input->post('confirmarClave'));
+        $confirmarClave = md5($this->input->post('confirmarClave'));//este campo solo viene de la vista de cambiar clave
 
         $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus,$confirmarClave);
         if ($up==1) {
