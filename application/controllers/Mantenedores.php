@@ -17,12 +17,12 @@ class Mantenedores extends CI_Controller
         $this->load->library('user_agent');
     }
 
-
+    //====== funcion para obtener los sitios ==================//
     public function getSitios()
     {
         extract($_GET);
         $id_sitio = $this->input->get('id_sitio');
-        
+
         $x = 1;
         if ($x == 1) {
             $sitios =  $this->Mantenedor_model->listaSitios($id_sitio);
@@ -31,25 +31,27 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
         }
     }
-
+    //====== funcion para editar los sitios ==================//
     function editarSitio()
     {
 
         extract($_POST);
-    
-        $up = $this->Mantenedor_model->modificarSitio($id_sitio, $descripcion_sitio,$estatus);
-        if ($up==1) {
+
+        $up = $this->Mantenedor_model->modificarSitio($id_sitio, $descripcion_sitio, $estatus);
+        if ($up == 1) {
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
         }
     }
+    //====== funcion para registrar sitios ==================//
     public function registrar_sitio()
     {
         extract($_POST);
 
         $arrayData = array(
-            'descripcion_sitio' => strtoupper($descripcion_sitio)       
+            'descripcion_sitio' => strtoupper($descripcion_sitio),
+            'estatus' => $estatus
         );
         $guardar = $this->Mantenedor_model->guardar_sitio($arrayData);
         if ($guardar == 1) {
@@ -59,4 +61,180 @@ class Mantenedores extends CI_Controller
         }
     }
 
+    //====== funcion para obtener los ambientes ==================//
+    public function getAmbientes()
+    {
+        extract($_GET);
+        $id_ambiente = $this->input->get('id_ambiente');
+
+        $x = 1;
+        if ($x == 1) {
+            $ambientes =  $this->Mantenedor_model->listaAmbientes($id_ambiente);
+            echo json_encode(array('response' => $ambientes, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+
+    //====== funcion para editar los ambientes ==================//
+    function editarAmbiente()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarAmbiente($id_ambiente, $descripcion_ambiente, $estatus);
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar ambientes ==================//
+    public function registrar_ambiente()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'descripcion_ambiente' => strtoupper($descripcion_ambiente),
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_ambiente($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+
+
+    //====== funcion para obtener los ambientes ==================//
+    public function getServicios()
+    {
+        extract($_GET);
+        $id_servicio = $this->input->get('id_servicio');
+
+        $x = 1;
+        if ($x == 1) {
+            $servicios =  $this->Mantenedor_model->listaServicios($id_servicio);
+            echo json_encode(array('response' => $servicios, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para editar los servicios ==================//
+    function editarServicio()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarServicio($id_servicio, $descripcion_servicio, $estatus);
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar servicios ==================//
+    public function registrar_servicios()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'descripcion_servicio' => strtoupper($descripcion_servicio),
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_servicio($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para obtener los tipos de servidores ==================//
+    public function getTipoServidor()
+    {
+        extract($_GET);
+        $id_tipo_servidor = $this->input->get('id_tipo_servidor');
+
+        $x = 1;
+        if ($x == 1) {
+            $tipoServidor =  $this->Mantenedor_model->listaTipoServidor($id_tipo_servidor);
+            echo json_encode(array('response' => $tipoServidor, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para editar los tipos de servidor ==================//
+    function editarTipoServidor()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarTipoServidor($id_tipo_servidor, $tipo_servidor, $estatus);
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+
+    //====== funcion para registrar tipos de servidor ==================//
+    public function registrar_TiposServidor()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'tipo_servidor' => strtoupper($tipo_servidor),
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_tipoServidor($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para obtener los tipos de software ==================//
+    public function getTipoSoftware()
+    {
+        extract($_GET);
+        $id_tipo_software = $this->input->get('id_tipo_software');
+
+        $x = 1;
+        if ($x == 1) {
+            $tipoSoftware =  $this->Mantenedor_model->listaTipoSoftware($id_tipo_software);
+            echo json_encode(array('response' => $tipoSoftware, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para editar los tipos de software ==================//
+    function editarTipoSoftware()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarTipoSoftware($id_tipo_software, $descripcion_software, $estatus);
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar tipos de software ==================//
+    public function registrar_TiposSoftware()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'descripcion_software' => strtoupper($descripcion_software),
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_tipoSoftware($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
 }
