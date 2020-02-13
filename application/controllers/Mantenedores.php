@@ -237,4 +237,66 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
         }
     }
+    //====== funcion para obtener los software ==================//
+    public function getSoftware()
+    {
+        extract($_GET);
+        $id_software = $this->input->get('id_software');
+
+        $x = 1;
+        if ($x == 1) {
+            $software =  $this->Mantenedor_model->listaSoftware($id_software);
+            echo json_encode(array('response' => $software, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar tipos de software ==================//
+    public function registrar_Software()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'nombre_software' => strtoupper($nombre_software),
+            'version_software' => strtoupper($version_software),
+            'id_tipo_software' => $id_tipo_software,
+            'nro_licencia' => strtoupper($nro_licencia),
+            'proveedor' => strtoupper($proveedor),
+            'contacto' => strtoupper($contacto),
+            'fecha_compra' => $fecha_compra,
+            'fecha_expiracion' => $fecha_expiracion,
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_Software($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+
+    //====== funcion para editar software ==================//
+    function editarSoftware()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarSoftware(
+            $id_software,
+            $nombre_software,
+            $version_software,
+            $id_tipo_software,
+            $nro_licencia,
+            $proveedor,
+            $contacto,
+            $fecha_compra,
+            $fecha_expiracion,
+            $estatus
+        );
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
 }

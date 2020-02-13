@@ -14,7 +14,6 @@ class Mantenedor_model extends CI_Model
   // ============== Funcion para cargar sitios ==========================//
   public function listaSitios($id_sitio = NULL)
   {
-
     $query = "SELECT  id_sitio, UPPER(descripcion_sitio)as descripcion_sitio, 
                         estatus 
                        FROM  n_sitios ";
@@ -28,7 +27,6 @@ class Mantenedor_model extends CI_Model
   //=============== Funcion para modificar sitios ==========================//
   public function modificarSitio($id_sitio, $descripcion_sitio, $estatus)
   {
-    // extract($$arrayData2);
     $sql = "UPDATE n_sitios set descripcion_sitio = '{$descripcion_sitio}', estatus='{$estatus}'";
     $sql .= " where id_sitio={$id_sitio}";
 
@@ -47,7 +45,6 @@ class Mantenedor_model extends CI_Model
 
     $sql = "INSERT INTO n_sitios (descripcion_sitio,estatus) VALUES ('{$descripcion_sitio}',{$estatus})";
     $this->db->query($sql);
-    //return 1;
     if ($this->db->affected_rows() > 0) {
       return 1;
     } else {
@@ -58,7 +55,6 @@ class Mantenedor_model extends CI_Model
   // ============== Funcion para cargar ambientes ==========================//
   public function listaAmbientes($id_ambiente = NULL)
   {
-
     $query = "SELECT  id_ambiente, UPPER(descripcion_ambiente)as descripcion_ambiente, estatus FROM  n_ambientes ";
     if ($id_ambiente != NULL) {
       $query .= " where id_ambiente='{$id_ambiente}'";
@@ -70,7 +66,6 @@ class Mantenedor_model extends CI_Model
   //=============== Funcion para modificar Ambientes ==========================//
   public function modificarAmbiente($id_ambiente, $descripcion_ambiente, $estatus)
   {
-    // extract($$arrayData2);
     $sql = "UPDATE n_ambientes set descripcion_ambiente = '{$descripcion_ambiente}', estatus='{$estatus}'";
     $sql .= " where id_ambiente={$id_ambiente}";
 
@@ -88,7 +83,6 @@ class Mantenedor_model extends CI_Model
 
     $sql = "INSERT INTO n_ambientes (descripcion_ambiente,estatus) VALUES ('{$descripcion_ambiente}',{$estatus})";
     $this->db->query($sql);
-    //return 1;
     if ($this->db->affected_rows() > 0) {
       return 1;
     } else {
@@ -110,7 +104,6 @@ class Mantenedor_model extends CI_Model
   // ============== Funcion para modificar servicios ==========================//
   public function modificarServicio($id_servicio, $descripcion_servicio, $estatus)
   {
-    // extract($$arrayData2);
     $sql = "UPDATE n_servicios set descripcion_servicio = '{$descripcion_servicio}', estatus='{$estatus}'";
     $sql .= " where id_servicio={$id_servicio}";
 
@@ -128,7 +121,6 @@ class Mantenedor_model extends CI_Model
 
     $sql = "INSERT INTO n_servicios (descripcion_servicio,estatus) VALUES ('{$descripcion_servicio}',{$estatus})";
     $this->db->query($sql);
-    //return 1;
     if ($this->db->affected_rows() > 0) {
       return 1;
     } else {
@@ -190,7 +182,6 @@ class Mantenedor_model extends CI_Model
   // ============== Funcion para modificar tipos de software ==========================//
   public function modificarTipoSoftware($id_tipo_software, $descripcion_software, $estatus)
   {
-    // extract($$arrayData2);
     $sql = "UPDATE n_tipo_software set descripcion_software = '{$descripcion_software}', estatus='{$estatus}'";
     $sql .= " where id_tipo_software={$id_tipo_software}";
 
@@ -208,7 +199,73 @@ class Mantenedor_model extends CI_Model
 
     $sql = "INSERT INTO n_tipo_software (descripcion_software,estatus) VALUES ('{$descripcion_software}',{$estatus})";
     $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  // ============== Funcion para cargar los software ==========================//
+  public function listaSoftware($id_software = NULL)
+  {
+
+    $query = "SELECT  s.id_software, UPPER(s.nombre_software)as nombre_software, 
+                      UPPER(t.descripcion_software) as descripcion_software,s.version_software,s.estatus,
+                      s.nro_licencia,s.proveedor,s.contacto,s.fecha_compra, s.fecha_expiracion,t.id_tipo_software,
+                      TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento
+                      FROM  t_software s
+                      left join n_tipo_software t on (s.id_tipo_software = t.id_tipo_software)";
+    if ($id_software != NULL) {
+      $query .= " where id_software='{$id_software}'";
+    }
+
+
+    $query = $this->db->query($query);
+
+    return $query->result();
+  }
+  // ============== Funcion para guardar software ==========================//
+  public function guardar_Software($arrayData)
+  {
+    extract($arrayData);
+
+    $sql = "INSERT INTO t_software (nombre_software,version_software,id_tipo_software,nro_licencia,proveedor,
+                                    contacto,fecha_compra,fecha_expiracion,estatus) 
+                            VALUES ('{$nombre_software}','{$version_software}','{$id_tipo_software}','{$nro_licencia}',
+                                   '{$proveedor}','{$contacto}','{$fecha_compra}','{$fecha_expiracion}','{$estatus}')";
+    $this->db->query($sql);
     //return 1;
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  // ============== Funcion para modificar software ==========================//
+  public function modificarSoftware(
+    $id_software,
+    $nombre_software,
+    $version_software,
+    $id_tipo_software,
+    $nro_licencia,
+    $proveedor,
+    $contacto,
+    $fecha_compra,
+    $fecha_expiracion,
+    $estatus
+  ) {
+    $sql = "UPDATE t_software set nombre_software = '{$nombre_software}', 
+                                  version_software = '{$version_software}',
+                                  id_tipo_software = '{$id_tipo_software}',
+                                  nro_licencia = '{$nro_licencia}',
+                                  proveedor = '{$proveedor}',
+                                  contacto = '{$contacto}',
+                                  fecha_compra = '{$fecha_compra}',
+                                  fecha_expiracion = '{$fecha_expiracion}',
+                                  estatus='{$estatus}'";
+    $sql .= " where id_software={$id_software}";
+
+    $query = $this->db->query($sql);
     if ($this->db->affected_rows() > 0) {
       return 1;
     } else {
