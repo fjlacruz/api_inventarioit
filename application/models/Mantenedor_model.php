@@ -272,4 +272,81 @@ class Mantenedor_model extends CI_Model
       return 0;
     }
   }
+  // ============== Funcion para cargar Servidores ==========================//
+  public function listaServidores($id_servidor  = NULL, $buscar = NULL)
+  {
+    $query = "SELECT  s.id_servidor,s.id_ambiente,s.id_servicio, UPPER(s.nombre_servidor)as nombre_servidor, 
+                       s.ip_servidor,s.id_sitio,s.id_tipo_servidor, UPPER(s.marca_servidor)as marca_servidor,
+                       UPPER(s.modelo_servidor)as modelo_servidor, s.nro_serie, UPPER(s.proveedor)as proveedor,
+                       UPPER(s.contacto)as contacto,s.estatus, a.descripcion_ambiente,a.estatus,se.descripcion_servicio,
+                       se.estatus,si.descripcion_sitio,si.estatus,ts.tipo_servidor,ts.estatus,s.id_software,sf.nombre_software
+                        FROM  t_servidores s 
+                        left join n_ambientes a on (s.id_ambiente=a.id_ambiente)
+                        left join n_servicios se on (s.id_servicio=se.id_servicio)
+                        left join n_sitios si on (s.id_sitio=si.id_sitio)
+                        left join n_tipo_servidor ts on (s.id_tipo_servidor=ts.id_tipo_servidor)
+                        left join t_software sf on (s.id_software=sf.id_software)
+                        
+                        ";
+    if ($id_servidor  != NULL) {
+      $query .= " where id_servidor ='{$id_servidor}'";
+    }
+    if ($buscar != NULL) {
+      $query .= " where s.nombre_servidor like '%{$buscar}%' or s.ip_servidor like '%{$buscar}%' or ts.tipo_servidor like '%{$buscar}%'  
+      or s.marca_servidor like '%{$buscar}%' or s.modelo_servidor like '%{$buscar}%'";
+    }
+    if ($buscar == NULL) {
+      $query .= " ORDER by s.id_servidor desc limit 10";
+    }
+
+    $query = $this->db->query($query);
+
+    return $query->result();
+  }
+  // ============== Funcion para contar la cantidad de  Servidores ==========================//
+  public function cantidaDeServidores()
+  {
+    $query = $this->db->query("SELECT count(*)as cantidad FROM t_servidores");
+    return $query->result();
+  }
+  // ============== Funcion para modificar software ==========================//
+  public function modificarServidor(
+    $id_servidor,
+    $nombre_servidor,
+    $ip_servidor,
+    $id_tipo_servidor,
+    $id_ambiente,
+    $id_servicio,
+    $id_sitio,
+    $marca_servidor,
+    $modelo_servidor,
+    $nro_serie,
+    $proveedor,
+    $contacto,
+    $estatus
+  ) {
+    $sql = "UPDATE t_servidores set nombre_servidor = '{$nombre_servidor}', 
+                                  ip_servidor = '{$ip_servidor}',
+                                  id_tipo_servidor = '{$id_tipo_servidor}',
+                                  id_ambiente = '{$id_ambiente}',
+                                  id_servicio = '{$id_servicio}',
+                                  id_sitio = '{$id_sitio}',
+                                  marca_servidor = '{$marca_servidor}',
+                                  modelo_servidor='{$modelo_servidor}',
+                                  nro_serie='{$nro_serie}',
+                                  proveedor='{$proveedor}',
+                                  contacto='{$contacto}',
+                                  estatus='{$estatus}'             
+                                  ";
+
+    $sql .= " where id_servidor={$id_servidor}";
+    //print_r($sql);
+    // exit;
+    $query = $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 }

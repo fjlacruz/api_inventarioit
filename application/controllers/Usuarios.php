@@ -21,7 +21,7 @@ class Usuarios extends CI_Controller
     {
         $rut = $this->input->post('rut');
         $clave = md5($this->input->post('clave'));
-  
+
         $user = $this->Consultas_usuarios_model->loguear($rut, $clave);
         foreach ($user as $resultado) {
             $id_usuario =  $resultado->id_usuario;
@@ -69,7 +69,7 @@ class Usuarios extends CI_Controller
     public function getUsers()
     {
         $token = $this->input->get('token');
-        $buscar = $this->input->get('buscar'); // Variable que viene por get desde el buscador de usuarios
+        $buscar = strtoupper($this->input->get('buscar')); // Variable que viene por get desde el buscador de usuarios
         $id_usuario = $this->input->get('id_usuario');
         $x = 1;
         if ($x == 1) {
@@ -92,11 +92,11 @@ class Usuarios extends CI_Controller
     {
 
         extract($_POST);
-    
-        $confirmarClave = md5($this->input->post('confirmarClave'));//este campo solo viene de la vista de cambiar clave
 
-        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus,$confirmarClave);
-        if ($up==1) {
+        $confirmarClave = md5($this->input->post('confirmarClave')); //este campo solo viene de la vista de cambiar clave
+
+        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus, $confirmarClave);
+        if ($up == 1) {
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
@@ -123,5 +123,4 @@ class Usuarios extends CI_Controller
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
         }
     }
-
 }

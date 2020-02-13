@@ -299,4 +299,52 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
         }
     }
+    //====== funcion para obtener los servidores ==================//
+    public function getServidor()
+    {
+        extract($_GET);
+        $id_servidor  = $this->input->get('id_servidor');
+        $buscar = $this->input->get('buscar');
+
+        $x = 1;
+        if ($x == 1) {
+            $servidores =  $this->Mantenedor_model->listaServidores($id_servidor, $buscar);
+            echo json_encode(array('response' => $servidores, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para obtener la cantidad servidores ==================//
+    public function cantidadServidores()
+    {
+        $cantUServidores =  $this->Mantenedor_model->cantidaDeServidores();
+        echo json_encode(array('response' => $cantUServidores, 'estatus' => 'OK', 'code' => 200));
+    }
+    //====== funcion para editar Servidores ==================//
+    function editarServidor()
+    {
+
+        extract($_POST);
+
+        $up = $this->Mantenedor_model->modificarServidor(
+            $id_servidor,
+            $nombre_servidor,
+            $ip_servidor,
+            $id_tipo_servidor,
+            $id_ambiente,
+            $id_servicio,
+            $id_sitio,
+            $marca_servidor,
+            $modelo_servidor,
+            $nro_serie,
+            $proveedor,
+            $contacto,
+            $estatus
+        );
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
 }
