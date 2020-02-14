@@ -280,15 +280,14 @@ class Mantenedor_model extends CI_Model
                        s.ip_servidor,s.id_sitio,s.id_tipo_servidor, UPPER(s.marca_servidor)as marca_servidor,
                        UPPER(s.modelo_servidor)as modelo_servidor, s.nro_serie, UPPER(s.proveedor)as proveedor,
                        UPPER(s.contacto)as contacto,s.estatus, a.descripcion_ambiente,se.descripcion_servicio,
-                       si.descripcion_sitio,ts.tipo_servidor,s.id_software,sf.nombre_software,a.estatus as estA,
-                       tss.id_servidor as sf, tss.id_software as sofware_ss
+                       si.descripcion_sitio,ts.tipo_servidor,s.id_software,sf.nombre_software,a.estatus as estA
                         FROM  t_servidores s 
                         left join n_ambientes a on (s.id_ambiente=a.id_ambiente)
                         left join n_servicios se on (s.id_servicio=se.id_servicio)
                         left join n_sitios si on (s.id_sitio=si.id_sitio)
                         left join n_tipo_servidor ts on (s.id_tipo_servidor=ts.id_tipo_servidor)
                         left join t_software sf on (s.id_software=sf.id_software)
-                        left join t_servidor_software tss on (s.id_servidor=tss.id_servidor) 
+                        
                         ";
     if ($id_servidor  != NULL) {
       $query .= " where s.id_servidor ='{$id_servidor}'";
