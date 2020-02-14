@@ -214,9 +214,10 @@ class Mantenedor_model extends CI_Model
                       s.nro_licencia,s.proveedor,s.contacto,s.fecha_compra, s.fecha_expiracion,t.id_tipo_software,
                       TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento
                       FROM  t_software s
-                      left join n_tipo_software t on (s.id_tipo_software = t.id_tipo_software)";
+                      left join n_tipo_software t on (s.id_tipo_software = t.id_tipo_software)
+                      ";
     if ($id_software != NULL) {
-      $query .= " where id_software='{$id_software}'";
+      $query .= " where id_software='{$id_software}' order by s.fecha_expiracion ASC";
     }
 
 
