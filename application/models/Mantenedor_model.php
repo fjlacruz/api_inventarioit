@@ -212,7 +212,7 @@ class Mantenedor_model extends CI_Model
     $query = "SELECT  s.id_software, UPPER(s.nombre_software)as nombre_software, 
                       UPPER(t.descripcion_software) as descripcion_software,s.version_software,s.estatus,
                       s.nro_licencia,s.proveedor,s.contacto,s.fecha_compra, s.fecha_expiracion,t.id_tipo_software,
-                      TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento
+                      TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento,s.asignado
                       FROM  t_software s
                       left join n_tipo_software t on (s.id_tipo_software = t.id_tipo_software)
                       ";
@@ -279,18 +279,19 @@ class Mantenedor_model extends CI_Model
     $query = "SELECT  s.id_servidor,s.id_ambiente,s.id_servicio, UPPER(s.nombre_servidor)as nombre_servidor, 
                        s.ip_servidor,s.id_sitio,s.id_tipo_servidor, UPPER(s.marca_servidor)as marca_servidor,
                        UPPER(s.modelo_servidor)as modelo_servidor, s.nro_serie, UPPER(s.proveedor)as proveedor,
-                       UPPER(s.contacto)as contacto,s.estatus, a.descripcion_ambiente,a.estatus,se.descripcion_servicio,
-                       se.estatus,si.descripcion_sitio,si.estatus,ts.tipo_servidor,ts.estatus,s.id_software,sf.nombre_software
+                       UPPER(s.contacto)as contacto,s.estatus, a.descripcion_ambiente,se.descripcion_servicio,
+                       si.descripcion_sitio,ts.tipo_servidor,s.id_software,sf.nombre_software,a.estatus as estA,
+                       tss.id_servidor as sf, tss.id_software as sofware_ss
                         FROM  t_servidores s 
                         left join n_ambientes a on (s.id_ambiente=a.id_ambiente)
                         left join n_servicios se on (s.id_servicio=se.id_servicio)
                         left join n_sitios si on (s.id_sitio=si.id_sitio)
                         left join n_tipo_servidor ts on (s.id_tipo_servidor=ts.id_tipo_servidor)
                         left join t_software sf on (s.id_software=sf.id_software)
-                        
+                        left join t_servidor_software tss on (s.id_servidor=tss.id_servidor) 
                         ";
     if ($id_servidor  != NULL) {
-      $query .= " where id_servidor ='{$id_servidor}'";
+      $query .= " where s.id_servidor ='{$id_servidor}'";
     }
     if ($buscar != NULL) {
       $query .= " where s.nombre_servidor like '%{$buscar}%' or s.ip_servidor like '%{$buscar}%' or ts.tipo_servidor like '%{$buscar}%'  
@@ -341,13 +342,64 @@ class Mantenedor_model extends CI_Model
                                   ";
 
     $sql .= " where id_servidor={$id_servidor}";
-    //print_r($sql);
-    // exit;
+    // print_r($sql);
+    //exit;
     $query = $this->db->query($sql);
     if ($this->db->affected_rows() > 0) {
       return 1;
     } else {
       return 0;
     }
+  }
+  // ============== Funcion para guardar servidores ==========================//
+  public function guardar_servidor($arrayData)
+  {
+    extract($arrayData);
+
+    $sql = "INSERT INTO t_servidores 
+
+    (nombre_servidor,id_servidor,id_tipo_servidor,id_ambiente,id_servicio,id_sitio,marca_servidor,modelo_servidor,nro_serie,proveedor,contacto,estatus) 
+    VALUES 
+    ('{$nombre_servidor}',{$id_servidor},{$id_tipo_servidor},{$id_ambiente},{$id_servicio},{$id_sitio},'{$marca_servidor}','{$modelo_servidor}','{$nro_serie}','{$proveedor}','{$contacto}',{$estatus})";
+
+    $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  // ============== Funcion para guardar Software-servidor ==========================//
+  public function guardar_servidor_software($arrayData)
+  {
+    extract($arrayData);
+
+    $sql = "INSERT INTO  t_servidor_software (id_servidor,id_software) VALUES ('{$id_servidor}',{$id_software})";
+
+    $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  // ============== Funcion para cargar tipos de software asignados ==========================//
+  public function listaSoftwareAsignados($id_servidor, $buscar = NULL)
+  {
+
+    $query = "SELECT  ss.id_software,ss.id_servidor,s.nombre_software,n.descripcion_software,
+                      TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento,s.estatus
+                    FROM  t_servidor_software ss
+                    left join t_software s on (ss.id_software= s.id_software)
+                    left join n_tipo_software n on (s.id_tipo_software= n.id_tipo_software)
+
+                    ";
+    if ($id_servidor != NULL) {
+      $query .= " where id_servidor='{$id_servidor}'";
+    }
+
+    $query = $this->db->query($query);
+
+    return $query->result();
   }
 }

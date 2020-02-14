@@ -304,7 +304,7 @@ class Mantenedores extends CI_Controller
     {
         extract($_GET);
         $id_servidor  = $this->input->get('id_servidor');
-        $buscar = $this->input->get('buscar');
+        $buscar = strtoupper($this->input->get('buscar'));
 
         $x = 1;
         if ($x == 1) {
@@ -345,6 +345,66 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar servidores ==================//
+    public function registrar_servidor()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+            'nombre_servidor' => strtoupper($nombre_servidor),
+            'id_servidor' => $id_servidor,
+            'id_tipo_servidor' => $id_tipo_servidor,
+            'id_ambiente' => $id_ambiente,
+            'id_servicio' => $id_servicio,
+            'id_sitio' => $id_sitio,
+            'marca_servidor' => strtoupper($marca_servidor),
+            'modelo_servidor' => strtoupper($modelo_servidor),
+            'nro_serie' => strtoupper($nro_serie),
+            'proveedor' => strtoupper($proveedor),
+            'contacto' => strtoupper($contacto),
+            'estatus' => $estatus
+        );
+        $guardar = $this->Mantenedor_model->guardar_servidor($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar Software-servidor ==================//
+    public function registrar_servidorSoftware()
+    {
+        extract($_POST);
+
+        $arrayData = array(
+
+            'id_servidor' => $id_servidor,
+            'id_software' => $id_software
+        );
+
+        $guardar = $this->Mantenedor_model->guardar_servidor_software($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+
+    //====== funcion para obtener los software asignados a los servidores ==================//
+    public function getServidorSoftware()
+    {
+        extract($_GET);
+        $id_servidor  = $this->input->get('id_servidor');
+        $buscar = strtoupper($this->input->get('buscar'));
+
+        $x = 1;
+        if ($x == 1) {
+            $asignados =  $this->Mantenedor_model->listaSoftwareAsignados($id_servidor, $buscar);
+            echo json_encode(array('response' => $asignados, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
         }
     }
 }
