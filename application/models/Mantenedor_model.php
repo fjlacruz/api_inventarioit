@@ -401,4 +401,10 @@ class Mantenedor_model extends CI_Model
 
     return $query->result();
   }
+  // ============== Funcion para eliminar de software asignados ==========================//
+  public function eliminarAsignacion($id_servidor_software)
+  {
+    $this->db->where('id_servidor_software', $id_servidor_software);
+    $this->db->delete('t_servidor_software');
+  }
 }

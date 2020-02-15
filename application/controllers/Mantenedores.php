@@ -410,7 +410,7 @@ class Mantenedores extends CI_Controller
     function eliminarAsignacion()
     {
 
-        $id_item = $this->input->get('id_item');
-        $delete = $this->ItemsModel->eliminarAsignacion($id_item);
+        $id_servidor_software = $this->input->get('id_servidor_software');
+        $delete = $this->Mantenedor_model->eliminarAsignacion($id_servidor_software);
     }
 }
