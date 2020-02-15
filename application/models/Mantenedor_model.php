@@ -386,7 +386,7 @@ class Mantenedor_model extends CI_Model
   public function listaSoftwareAsignados($id_servidor, $buscar = NULL)
   {
 
-    $query = "SELECT  ss.id_software,ss.id_servidor,s.nombre_software,n.descripcion_software,
+    $query = "SELECT  ss.id_software,ss.id_servidor,s.nombre_software,n.descripcion_software,ss.id_servidor_software,
                       TIMESTAMPDIFF(DAY, DATE_FORMAT(now(),'%Y-%m-%d'), s.fecha_expiracion) AS vencimiento,s.estatus
                     FROM  t_servidor_software ss
                     left join t_software s on (ss.id_software= s.id_software)

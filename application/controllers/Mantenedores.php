@@ -407,4 +407,10 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
         }
     }
+    function eliminarAsignacion()
+    {
+
+        $id_item = $this->input->get('id_item');
+        $delete = $this->ItemsModel->eliminarAsignacion($id_item);
+    }
 }
