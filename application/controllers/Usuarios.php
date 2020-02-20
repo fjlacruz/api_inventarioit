@@ -123,4 +123,45 @@ class Usuarios extends CI_Controller
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
         }
     }
+
+    public function validarExisteRut()
+    {
+
+        $rut = $_POST['rut'];
+        if ($rut == "") {
+            exit();
+        }
+
+        $consultar_rut = $this->Consultas_usuarios_model->existe_rut($rut);
+        if ($consultar_rut[0] != 0) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    public function validarExisteUsuario()
+    {
+
+        $usuario = $_POST['usuario'];
+        if ($usuario == "") {
+            exit();
+        }
+
+        $consultar_usuario = $this->Consultas_usuarios_model->existe_usuario($usuario);
+        if ($consultar_usuario[0] != 0) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    public function getUsersList()
+    {
+        $x = 1;
+        if ($x == 1) {
+            $usuarios =  $this->Consultas_usuarios_model->usuariosListSelect();
+            echo json_encode(array('response' => $usuarios, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
 }

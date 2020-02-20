@@ -357,9 +357,9 @@ class Mantenedor_model extends CI_Model
 
     $sql = "INSERT INTO t_servidores 
 
-    (nombre_servidor,id_servidor,id_tipo_servidor,id_ambiente,id_servicio,id_sitio,marca_servidor,modelo_servidor,nro_serie,proveedor,contacto,estatus) 
+    (nombre_servidor,ip_servidor,id_tipo_servidor,id_ambiente,id_servicio,id_sitio,marca_servidor,modelo_servidor,nro_serie,proveedor,contacto,estatus) 
     VALUES 
-    ('{$nombre_servidor}',{$id_servidor},{$id_tipo_servidor},{$id_ambiente},{$id_servicio},{$id_sitio},'{$marca_servidor}','{$modelo_servidor}','{$nro_serie}','{$proveedor}','{$contacto}',{$estatus})";
+    ('{$nombre_servidor}','{$ip_servidor}',{$id_tipo_servidor},{$id_ambiente},{$id_servicio},{$id_sitio},'{$marca_servidor}','{$modelo_servidor}','{$nro_serie}','{$proveedor}','{$contacto}',{$estatus})";
 
     $this->db->query($sql);
     if ($this->db->affected_rows() > 0) {
@@ -406,5 +406,46 @@ class Mantenedor_model extends CI_Model
   {
     $this->db->where('id_servidor_software', $id_servidor_software);
     $this->db->delete('t_servidor_software');
+  }
+
+  // ============== Funcion para validar si existe un siftware asignado ==========================//
+  public function existe_software($model)
+  {
+    $sql = "SELECT * from t_servidor_software where id_software = '{$model}'";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    if (isset($result[0])) {
+      return "1";
+    } else {
+      return "0";
+    }
+  }
+  //=============== Funcion para asignar usuario a un servidor ==========================//
+  public function guardar_asignacion($arrayData)
+  {
+    extract($arrayData);
+
+    $sql = "INSERT INTO  t_asignacion_equipos (id_servidor,id_usuario) VALUES ({$id_servidor},{$id_usuario})";
+
+    $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  // ============== Funcion para verificar servidores asignados usuarios ==========================//
+  public function serividoresAsignadosUsuarios($id_servidor)
+  {
+
+    $query = "SELECT a.id_usuario, a.id_servidor, u.nombres, u.apellidos
+                     from t_asignacion_equipos a
+                     left join t_usuarios u on (u.id_usuario = a.id_usuario)
+                     where id_servidor={$id_servidor}";
+    $query = $this->db->query($query);
+
+    return $query->result();
   }
 }

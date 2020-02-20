@@ -354,7 +354,7 @@ class Mantenedores extends CI_Controller
 
         $arrayData = array(
             'nombre_servidor' => strtoupper($nombre_servidor),
-            'id_servidor' => $id_servidor,
+            'ip_servidor' => $ip_servidor,
             'id_tipo_servidor' => $id_tipo_servidor,
             'id_ambiente' => $id_ambiente,
             'id_servicio' => $id_servicio,
@@ -407,10 +407,56 @@ class Mantenedores extends CI_Controller
             echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
         }
     }
+    //============== funcion para eliminar asignacion de software =========================//
     function eliminarAsignacion()
     {
 
         $id_servidor_software = $this->input->get('id_servidor_software');
         $delete = $this->Mantenedor_model->eliminarAsignacion($id_servidor_software);
+    }
+    //========= funcion para validar si ya esta asignado un software a un servidor ============//
+    public function validarAsignacionSoftware()
+    {
+
+        $model = $_POST['model'];
+        if ($model == "") {
+            exit();
+        }
+
+        $consultar = $this->Mantenedor_model->existe_software($model);
+        if ($consultar[0] != 0) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //====== funcion para obtener los software asignados a los servidores ==================//
+    public function verificarAsignacionUsuario()
+    {
+        extract($_GET);
+        $id_servidor  = $this->input->get('id_servidor');
+
+        $x = 1;
+        if ($x == 1) {
+            $asignados =  $this->Mantenedor_model->serividoresAsignadosUsuarios($id_servidor);
+            echo json_encode(array('response' => $asignados, 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'Acceso Restringido', 'code' => 404));
+        }
+    }
+    //====== funcion para registrar asignacion de servidores ==================//
+    public function registrarAsignacion()
+    {
+        extract($_POST);
+        $arrayData = array(
+            'id_servidor' => $id_servidor,
+            'id_usuario' => $id_usuario
+        );
+        $guardar = $this->Mantenedor_model->guardar_asignacion($arrayData);
+        if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
     }
 }
