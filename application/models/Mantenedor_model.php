@@ -294,7 +294,7 @@ class Mantenedor_model extends CI_Model
     }
     if ($buscar != NULL) {
       $query .= " where s.nombre_servidor like '%{$buscar}%' or s.ip_servidor like '%{$buscar}%' or ts.tipo_servidor like '%{$buscar}%'  
-      or s.marca_servidor like '%{$buscar}%' or s.modelo_servidor like '%{$buscar}%'";
+      or a.descripcion_ambiente like '%{$buscar}%' or se.descripcion_servicio like '%{$buscar}%'or si.descripcion_sitio like '%{$buscar}%'";
     }
     if ($buscar == NULL) {
       $query .= " ORDER by s.id_servidor desc limit 10";
@@ -409,9 +409,9 @@ class Mantenedor_model extends CI_Model
   }
 
   // ============== Funcion para validar si existe un siftware asignado ==========================//
-  public function existe_software($model)
+  public function existe_software($model, $id_servidor)
   {
-    $sql = "SELECT * from t_servidor_software where id_software = '{$model}'";
+    $sql = "SELECT * from t_servidor_software where id_software = '{$model}' and id_servidor={$id_servidor}";
     $query = $this->db->query($sql);
     $result = $query->result();
 
@@ -440,12 +440,33 @@ class Mantenedor_model extends CI_Model
   public function serividoresAsignadosUsuarios($id_servidor)
   {
 
-    $query = "SELECT a.id_usuario, a.id_servidor, u.nombres, u.apellidos
+    $query = "SELECT a.id_usuario, a.id_servidor, u.nombres, u.apellidos,a.id_asignacion_equipo
                      from t_asignacion_equipos a
                      left join t_usuarios u on (u.id_usuario = a.id_usuario)
                      where id_servidor={$id_servidor}";
     $query = $this->db->query($query);
 
     return $query->result();
+  }
+
+  // ============== Funcion para eliminar usuarios asifnados a servidores ==========================//
+  public function eliminarAsignacionusu($id_asignacion_equipo)
+  {
+    $this->db->where('id_asignacion_equipo', $id_asignacion_equipo);
+
+    $this->db->delete('t_asignacion_equipos');
+  }
+  // ============== Funcion para validar si existe un siftware asignado ==========================//
+  public function existe_usuario($model, $id_servidor)
+  {
+    $sql = "SELECT * from  t_asignacion_equipos where id_usuario = '{$model}' and id_servidor = {$id_servidor}";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+
+    if (isset($result[0])) {
+      return "1";
+    } else {
+      return "0";
+    }
   }
 }

@@ -88,19 +88,32 @@ class Consultas_usuarios_model extends CI_Model
     return $query->result();
   }
 
-  public function modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus, $confirmarClave = NULL)
+  public function modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus)
   {
     // extract($$arrayData2);
-    $sql = "UPDATE t_usuarios set nombres = '{$nombres}',";
-    $sql .= " apellidos = '{$apellidos}',";
-    $sql .= " rut = '{$rut}',";
-    $sql .= " usuario = '{$usuario}',";
+    $sql = "UPDATE t_usuarios set nombres = UPPER('{$nombres}'),";
+    $sql .= " apellidos = UPPER('{$apellidos}'),";
+    $sql .= " rut = UPPER('{$rut}'),";
+    $sql .= " usuario = UPPER('{$usuario}'),";
     $sql .= " telefono = '{$telefono}',";
     $sql .= " rol = '{$rol}' ,";
-    $sql .= " estatus = '{$estatus}',";
-    if ($confirmarClave != NULL) {
-      $sql .= " clave = '{$confirmarClave}'";
+    $sql .= " email = UPPER('{$email}') ,";
+    $sql .= " estatus = '{$estatus}'";
+
+    $sql .= " where id_usuario={$id_usuario}";
+
+    $query = $this->db->query($sql);
+    if ($this->db->affected_rows() > 0) {
+      return 1;
+    } else {
+      return 0;
     }
+  }
+
+  public function modificarClave($id_usuario, $confirmarClave = NULL)
+  {
+    // extract($$arrayData2);
+    $sql = "UPDATE t_usuarios set clave = '{$confirmarClave}'";
     $sql .= " where id_usuario={$id_usuario}";
 
     $query = $this->db->query($sql);

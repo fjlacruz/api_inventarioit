@@ -414,22 +414,7 @@ class Mantenedores extends CI_Controller
         $id_servidor_software = $this->input->get('id_servidor_software');
         $delete = $this->Mantenedor_model->eliminarAsignacion($id_servidor_software);
     }
-    //========= funcion para validar si ya esta asignado un software a un servidor ============//
-    public function validarAsignacionSoftware()
-    {
 
-        $model = $_POST['model'];
-        if ($model == "") {
-            exit();
-        }
-
-        $consultar = $this->Mantenedor_model->existe_software($model);
-        if ($consultar[0] != 0) {
-            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
-        } else {
-            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
-        }
-    }
     //====== funcion para obtener los software asignados a los servidores ==================//
     public function verificarAsignacionUsuario()
     {
@@ -454,6 +439,49 @@ class Mantenedores extends CI_Controller
         );
         $guardar = $this->Mantenedor_model->guardar_asignacion($arrayData);
         if ($guardar == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //============== funcion para eliminar asignacion de usuario =========================//
+    function eliminarAsignacionusuario()
+    {
+
+        $id_asignacion_equipo = $this->input->get('id_asignacion_equipo');
+
+        $delete = $this->Mantenedor_model->eliminarAsignacionusu($id_asignacion_equipo);
+    }
+    //========= funcion para validar si ya esta asignado un usuario a un servidor ============//
+    public function validarAsignacionUsuario()
+    {
+        extract($_POST);
+
+        $model = $_POST['model'];
+        $id_servidor = $_POST['id_servidor'];
+        if ($model == "") {
+            exit();
+        }
+
+        $consultar = $this->Mantenedor_model->existe_usuario($model, $id_servidor);
+        if ($consultar[0] != 0) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    //========= funcion para validar si ya esta asignado un software a un servidor ============//
+    public function validarAsignacionSoftware()
+    {
+
+        $model = $_POST['model'];
+        $id_servidor = $_POST['id_servidor'];
+        if ($model == "") {
+            exit();
+        }
+
+        $consultar = $this->Mantenedor_model->existe_software($model, $id_servidor);
+        if ($consultar[0] != 0) {
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
             echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));

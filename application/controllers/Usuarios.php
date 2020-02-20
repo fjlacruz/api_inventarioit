@@ -93,9 +93,21 @@ class Usuarios extends CI_Controller
 
         extract($_POST);
 
+        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus);
+        if ($up == 1) {
+            echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
+        } else {
+            echo json_encode(array('response' => 'fail', 'estatus' => 'OK', 'code' => 404));
+        }
+    }
+    function cambiarClave()
+    {
+
+        extract($_POST);
+
         $confirmarClave = md5($this->input->post('confirmarClave')); //este campo solo viene de la vista de cambiar clave
 
-        $up = $this->Consultas_usuarios_model->modificarUsuario($id_usuario, $nombres, $apellidos, $rut, $usuario, $email, $telefono, $rol, $estatus, $confirmarClave);
+        $up = $this->Consultas_usuarios_model->modificarClave($id_usuario, $confirmarClave);
         if ($up == 1) {
             echo json_encode(array('response' => 'success', 'estatus' => 'OK', 'code' => 200));
         } else {
